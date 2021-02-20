@@ -50,7 +50,7 @@ public class UserController {
             return "users/registration";
         }
         userService.registerUser(user);
-        return "redirect:/users/login";
+        return "users/login";
     }
 
     private boolean verifyPasswordStrength(String password) {
