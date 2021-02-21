@@ -53,15 +53,18 @@ public class UserController {
         return "users/login";
     }
 
+    // The requirement is to have atleast 1 Alphabet, 1 number and 1 special character
+    // We check for all characters possible
     private boolean verifyPasswordStrength(String password) {
-        final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z|A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,16}$";
-        final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
-        // Validate the password
-        if (PASSWORD_PATTERN.matcher(password).matches()) {
-            return true;
-        } else {
-            return false;
+        char[] passwordArray = password.toCharArray();
+        int numberCount =0, specialCharCount = 0, alphabetCount = 0;
+        for (char c : passwordArray) {
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) alphabetCount++;
+            else if (c >= '0' && c <= '9') numberCount++;
+            else specialCharCount++;
         }
+        if (numberCount > 0 && alphabetCount > 0 && specialCharCount > 0) return true;
+        return false;
     }
 
     //This controller method is called when the request pattern is of type 'users/login'
