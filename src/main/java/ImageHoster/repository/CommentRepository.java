@@ -22,6 +22,7 @@ public class CommentRepository {
             em.persist(comment);
             transaction.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             transaction.rollback();
         }
         return comment;
