@@ -29,8 +29,6 @@ public class ImageController {
     @Autowired
     private TagService tagService;
 
-    @Autowired
-    private CommentService commentService;
 
     //This method displays all the images in the user home page after successful login
     @RequestMapping("images")
@@ -53,10 +51,10 @@ public class ImageController {
     @RequestMapping("/images/{id}/{title}")
     public String showImage(@PathVariable("id") Integer id,@PathVariable("title") String title, Model model) {
         Image image = imageService.getImage(id);
-        List<Comment> comments = commentService.getCommentsByImageid(id);
+        //List<Comment> comments = commentService.getCommentsByImageid(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
-        model.addAttribute("comments",comments);
+        model.addAttribute("comments",image.getComments());
         return "images/image";
     }
 
@@ -108,11 +106,13 @@ public class ImageController {
             model.addAttribute("image", image);
             model.addAttribute("tags", image.getTags());
             model.addAttribute("editError", error);
+            model.addAttribute("comments", image.getComments());
             return "images/image";
         }
         String tags = convertTagsToString(image.getTags());
         model.addAttribute("image", image);
         model.addAttribute("tags", tags);
+        model.addAttribute("comments",image.getComments());
         return "images/edit";
     }
 
@@ -137,6 +137,7 @@ public class ImageController {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("image", image);
             model.addAttribute("tags", image.getTags());
+            model.addAttribute("comments", image.getComments());
             model.addAttribute("editError", error);
             return "images/image";
         }
@@ -155,7 +156,7 @@ public class ImageController {
         updatedImage.setDate(new Date());
 
         imageService.updateImage(updatedImage);
-        return "redirect:/images/" + updatedImage.getTitle();
+        return "redirect:/images/" + updatedImage.getId() + "/" + updatedImage.getTitle();
     }
 
 
@@ -172,6 +173,7 @@ public class ImageController {
             model.addAttribute("image", image);
             model.addAttribute("tags", image.getTags());
             model.addAttribute("deleteError", error);
+            model.addAttribute("comments", image.getComments());
             return "images/image";
         }
         imageService.deleteImage(imageId);
