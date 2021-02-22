@@ -78,8 +78,13 @@ public class ImageController {
     @RequestMapping(value = "/images/upload", method = RequestMethod.POST)
     public String createImage(@RequestParam("file") MultipartFile file, @RequestParam("tags") String tags, Image newImage, HttpSession session) throws IOException {
 
-        User user = (User) session.getAttribute("loggeduser");
-        newImage.setUser(user);
+        User loggeduser = (User) session.getAttribute("loggeduser");
+        if (loggeduser == null) {
+            // Looks like the session is gone
+            //redirect to the login page
+            return "redirect:/";
+        }
+        newImage.setUser(loggeduser);
         String uploadedImageData = convertUploadedFileToBase64(file);
         newImage.setImageFile(uploadedImageData);
 
@@ -99,9 +104,14 @@ public class ImageController {
     @RequestMapping(value = "/editImage")
     public String editImage(@RequestParam("imageId") Integer imageId, HttpSession session, Model model) {
         Image image = imageService.getImage(imageId);
-        User user = (User) session.getAttribute("loggeduser");
+        User loggeduser = (User) session.getAttribute("loggeduser");
+        if (loggeduser == null) {
+            // Looks like the session is gone
+            //redirect to the login page
+            return "redirect:/";
+        }
         User user1 = image.getUser();
-        if (user1.getId() != user.getId()) {
+        if (user1.getId() != loggeduser.getId()) {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("image", image);
             model.addAttribute("tags", image.getTags());
@@ -129,11 +139,16 @@ public class ImageController {
     //The method converts the string to a list of all the tags using findOrCreateTags() method and sets the tags attribute of an image as a list of all the tags
     @RequestMapping(value = "/editImage", method = RequestMethod.PUT)
     public String editImageSubmit(@RequestParam("file") MultipartFile file, @RequestParam("imageId") Integer imageId, @RequestParam("tags") String tags, Image updatedImage, HttpSession session,Model model) throws IOException {
-        User user = (User) session.getAttribute("loggeduser");
+        User loggeduser = (User) session.getAttribute("loggeduser");
+        if (loggeduser == null) {
+            // Looks like the session is gone
+            //redirect to the login page
+            return "redirect:/";
+        }
         Image image = imageService.getImage(imageId);
 
         User user1 = image.getUser();
-        if (user1.getId() != user.getId()) {
+        if (user1.getId() != loggeduser.getId()) {
             String error = "Only the owner of the image can edit the image";
             model.addAttribute("image", image);
             model.addAttribute("tags", image.getTags());
@@ -151,7 +166,7 @@ public class ImageController {
         }
 
         updatedImage.setId(imageId);
-        updatedImage.setUser(user);
+        updatedImage.setUser(loggeduser);
         updatedImage.setTags(imageTags);
         updatedImage.setDate(new Date());
 
@@ -167,6 +182,11 @@ public class ImageController {
     public String deleteImageSubmit(@RequestParam(name = "imageId") Integer imageId,HttpSession session,Model model) {
         Image image = imageService.getImage(imageId);
         User loggeduser = (User) session.getAttribute("loggeduser");
+        if (loggeduser == null) {
+            // Looks like the session is gone
+            //redirect to the login page
+            return "redirect:/";
+        }
         User imageuser = image.getUser();
         if (loggeduser.getId() != imageuser.getId()) {
             String error = "Only the owner of the image can delete the image";
