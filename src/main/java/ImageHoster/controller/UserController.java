@@ -55,6 +55,9 @@ public class UserController {
 
     // The requirement is to have atleast 1 Alphabet, 1 number and 1 special character
     // We check for all characters possible
+    // Currently there is no min or max limit of the length of password and special characters
+    // allowed so this function considers all characters apart from numbers and alphabets
+    // as special characters.
     private boolean verifyPasswordStrength(String password) {
         char[] passwordArray = password.toCharArray();
         int numberCount =0, specialCharCount = 0, alphabetCount = 0;

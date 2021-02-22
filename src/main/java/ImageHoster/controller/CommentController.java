@@ -19,6 +19,7 @@ import javax.xml.crypto.Data;
 import java.time.LocalDate;
 import java.util.Date;
 
+
 @Controller
 public class CommentController {
 
@@ -28,6 +29,13 @@ public class CommentController {
     @Autowired
     ImageService imageService;
 
+    /*
+    POST request to add new comment to the image. Any user can post a comment for an image
+    A user can post any number of comment for an image.
+    The method receives the id of an image, the image ittle, the comment of the image
+    along with the session and model object.
+    The method uses the image service to get the image details and comment service to safestore the comment.
+     */
     @RequestMapping(value = "/image/{imageId}/{imageTitle}/comments", method = RequestMethod.POST)
     public String newComment(@PathVariable("imageId") Integer id, @PathVariable("imageTitle") String title,
                              @RequestParam("comment") String comment, HttpSession session, Model model) {
@@ -39,10 +47,7 @@ public class CommentController {
         newComment.setText(comment);
         newComment.setCreatedDate(LocalDate.now());
         newComment = commentService.createComment(newComment);
-
         model.addAttribute("comments", newComment);
         return "redirect:/images/" + id + "/" + title;
-
-
     }
 }
