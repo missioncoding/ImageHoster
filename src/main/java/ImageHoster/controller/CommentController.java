@@ -40,9 +40,14 @@ public class CommentController {
     public String newComment(@PathVariable("imageId") Integer id, @PathVariable("imageTitle") String title,
                              @RequestParam("comment") String comment, HttpSession session, Model model) {
         Comment newComment = new Comment();
-        User user = (User) session.getAttribute("loggeduser");
+        User loggeduser = (User) session.getAttribute("loggeduser");
+        if (loggeduser == null) {
+            // Looks like the session is gone
+            //redirect to the login page
+            return "redirect:/";
+        }
         Image image = imageService.getImage(id);
-        newComment.setUser(user);
+        newComment.setUser(loggeduser);
         newComment.setImage(image);
         newComment.setText(comment);
         newComment.setCreatedDate(LocalDate.now());
