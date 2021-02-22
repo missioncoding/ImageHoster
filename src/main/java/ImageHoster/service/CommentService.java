@@ -18,8 +18,4 @@ public class CommentService {
         return commentRepository.createComment(comment);
     }
 
-    public List<Comment> getCommentsByImageid(Integer imageId) {
-        return commentRepository.getCommentsByImageid(imageId);
-    }
-
 }

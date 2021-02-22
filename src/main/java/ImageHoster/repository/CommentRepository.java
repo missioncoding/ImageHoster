@@ -27,14 +27,4 @@ public class CommentRepository {
         }
         return comment;
     }
-
-    public List<Comment> getCommentsByImageid(Integer imageId) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            TypedQuery<Comment> typedQuery = em.createQuery("SELECT i from Comment i where i.image.id =:id", Comment.class).setParameter("id", imageId);
-            return typedQuery.getResultList();
-        } catch (NoResultException nre) {
-            return null;
-        }
-    }
 }
